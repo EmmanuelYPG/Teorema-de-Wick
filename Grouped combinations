@@ -1,0 +1,62 @@
+from collections import Counter
+
+def generar_agrupaciones(n):
+    if n % 2 != 0:
+        print("El número debe ser par")
+        return []
+
+    numeros = list(range(1, n + 1))
+    resultados = []
+
+    def backtrack(restantes, actual):
+        if not restantes:
+            resultados.append(actual.copy())
+            return
+
+        primero = restantes[0]
+        for i in range(1, len(restantes)):
+            par = (primero, restantes[i])
+            nuevos_restantes = restantes[1:i] + restantes[i + 1:]
+            actual.append(par)
+            backtrack(nuevos_restantes, actual)
+            actual.pop()
+
+    backtrack(numeros, [])
+    return resultados
+
+#Mapeo de campos
+def generar_mapeo(x, y):
+    etiquetas = {}
+    total_y = 4*y  # Número total de elementos y_i
+
+
+#Aquí se cambiaron las letras por valores de y_n para faciliar los cambios de orden o puntos
+    # Asignamos x_1, x_2, ... hasta "puntos"
+    for i in range(1,x+1):
+        etiquetas[i] = f'x_{i}'
+
+    # Asignamos y_1, y_2, ... en bloques de 4
+    for i in range(1, total_y+1):
+        etiquetas[puntos + i] = f'y_{(i - 1) // 4 + 1}'
+
+    return etiquetas
+puntos = 2     # Puedes cambiar este valor
+orden = 2   # Puedes cambiar este valor
+mapeo = generar_mapeo(puntos,orden)
+n = puntos + 3*orden # Puedes cambiar este valor
+agrupaciones = generar_agrupaciones(n)
+
+# Normalizar cada agrupación
+
+def normalizar_agrupacion(agrupacion):
+    agrupacion_ordenada = [tuple(sorted((mapeo[x], mapeo[y]))) for x, y in agrupacion]
+    return tuple(sorted(agrupacion_ordenada))
+
+conteo = Counter(normalizar_agrupacion(agrup) for agrup in agrupaciones)
+total = 0
+# Mostrar los resultados agrupados
+print(f"Total de agrupaciones únicas: {len(conteo)}")
+for i, (agrup, cantidad) in enumerate(conteo.items(), 1):
+    print(f"{i}: {list(agrup)} -> Aparece {cantidad} veces")
+    total = total+cantidad
+print(f"Total de agrupaciones para {puntos} puntos y de orden {orden} es: {total}")
