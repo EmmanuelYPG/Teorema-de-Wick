@@ -1,0 +1,47 @@
+from itertools import combinations
+
+def generar_agrupaciones(n):
+    if n % 2 != 0:
+        print("El número debe ser par")
+        return []
+
+    numeros = list(range(1, n + 1))
+    resultados = []
+
+    def backtrack(restantes, actual):
+        if not restantes:
+            resultados.append(actual.copy())
+            return
+
+        primero = restantes[0]
+        for i in range(1, len(restantes)):
+            par = (primero, restantes[i])
+            nuevos_restantes = restantes[1:i] + restantes[i + 1:]
+            actual.append(par)
+            backtrack(nuevos_restantes, actual)
+            actual.pop()
+
+    backtrack(numeros, [])
+    return resultados
+
+# Diccionario de mapeo de números a letras
+mapeo = {
+    1: 'X', 2: 'Y', 3: 'Z', 4: 'Z',
+    5: 'Z', 6: 'Z', 7: 'V', 8: 'V',
+    9: 'V', 10: 'V', 11: 'K', 12: 'K',
+    13: 'K' , 14: 'K', 15 : 'J', 16: 'J',
+    17:'J', 18: 'J'
+}
+
+puntos = 2  # Puedes cambiar este valor
+orden = 2  # Puedes cambiar este valor
+n = puntos + 4*orden
+agrupaciones = generar_agrupaciones(n)
+
+print(f"Total de agrupaciones para n={n}: {len(agrupaciones)}")
+print("\nAgrupaciones en el formato solicitado:")
+
+for i, agrup in enumerate(agrupaciones, 1):
+    # Sustituir números por letras usando el diccionario de mapeo
+    str_agrup = "[" + ", ".join(f"({mapeo[x]},{mapeo[y]})" for x, y in agrup) + "]"
+    print(f"{i}: {str_agrup}")
